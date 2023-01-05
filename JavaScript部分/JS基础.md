@@ -296,3 +296,103 @@ const myX = fn() // myX 就是x了
 
 **方法一：使用原型**
 
+一个简单的例子
+```
+function Dog(name){
+   //私有属性
+   this.name = name
+   this.legsNumber = 4
+  
+}
+//犬吠、种族这种共有属性绑定到原型上
+Dog.prototype.say = function(){
+   console.log(`I am ${this.name}, I have ${this.legsNumber} legs`)
+Dog.prototype.kind = 'dog'
+
+}
+const d1 = new Dog("啸天") //Dog函数就是一个类
+d1.say() //这个Dog实例也会有say方法
+```
+
+**方法二：使用class**
+
+```
+class Dog{
+   kind = '狗' //等价于在constructor中写this.kind = '狗'
+   constructor(name){
+   //私有属性 写到constructor里面
+   this.name = name
+   this.legsNumber = 4
+   }
+   //共有属性
+   say(){
+   console.log(`I am ${this.name}, I have ${this.legsNumber} legs`)
+   }
+}
+
+//Dog实例
+const d2 = new Dog('啸天')
+d2.say()
+```
+
+
+### 如何实现继承
+
+**方法一：使用原型链**
+
+```
+//父类 
+function Animal(legsNumber){
+   this.legsNumber = legsNumber
+}
+Animal.prototype.kind = '动物'
+
+//子类
+function Dog(name){
+   //继承私有属性
+   Animal.call(this,4) // 相当于实现了 this.legsNumber = 4
+   this.name = name
+}
+Dog.prototype.__proto__ = Animal.prototpye //原型继承
+
+
+Dog.prototype.say = function(){
+   console.log(`I am ${this.name}, I have ${this.legsNumber} legs`)
+Dog.prototype.kind = 'dog'
+
+const d1 = new Dog('啸天') 
+console.dir(d1) 
+}
+
+```
+`Dog.prototype.__proto__ = Animal.prototpye`这句被ban掉了。
+可以替换为：
+
+```
+var f = function(){}
+f.prototype = Animal.prototype
+Dog.prototype = new f()
+```
+
+**方法二：使用class**
+
+```
+class Animal{
+   constructor(legsNumber){
+      this.legsNumber = legsNumber
+   }
+   run(){}
+}
+class Dog extends Animal{//原型通过extends继承
+   constructor(name){
+   //私有属性 写到constructor里面
+   super(4) //通过super关键字实现继承，会自动实现this.legsNumber = legsNumber
+   this.name = name
+   }
+   //共有属性
+   say(){
+   console.log(`I am ${this.name}, I have ${this.legsNumber} legs`)
+   }
+}
+
+```
