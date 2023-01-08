@@ -71,4 +71,108 @@ const debounce = (f, time, asThis) => {
     }
 }
 
-const tp = debounce(b,3000)
+const tp = debounce(b, 3000)
+
+
+//反转链表
+//定义一个cur指针，指向头节点
+//定义一个pre指针初始化为pre
+const reverseList = function (head) {
+    if (!head || !head.next) return head
+    let temp = null //用来保存
+    let pre = null
+    let cur = head
+    while (cur) {
+        temp = cur.next
+        cur.next = pre
+        pre = cur
+        cur = temp //temp = cur = null
+    }
+    return pre
+}
+
+// 手写 发布订阅
+//eventHub对象上有三个接口
+const eventHub = {
+    map: {}, //队列的表
+    on: (name, fn) => {
+        //防御式编程
+        eventHub.map[name] = eventHub.map[name] || [] //初始化
+        //入队
+        eventHub.map[name].push(fn)
+    },
+    emit: (name, data) => {
+        const fnList = eventHub.map[name]
+        if (!fnList) return
+        fnList.map(f => f.call(null, data))
+        return undefined
+    }, //trigger
+    off: (name, fn) => {
+        //alias设计模式
+        const fnList = eventHub.map[name]
+        if (!fnList) return
+        //找到这个函数
+        const index = fnList.indexOf(fn)
+        //队列中没有就return
+        if (index < 0) return
+        //删除
+        fnList.splice(index, 1)
+    }
+}
+//使用
+eventHub.on('click', console.log) //监听
+eventHub.on('click', console.error) //取消监听
+setTimeout(() => {
+    eventHub.emit('click', 'Origami') //触发事件
+}, 3000)
+
+//class 实现
+
+class EventHub {
+    map = {}
+
+    on(name, fn) {
+        this.map[name] = this.map[name] || [] //初始化
+        //入队
+        this.map[name].push(fn)
+    }
+
+    emit(name, data) {
+        const fnList = this.map[name] || []
+        fnList.forEach(fn => fn.call(undefined, data))
+    }
+
+    off(name, fn) {
+        const fnList = this.map[name] || []
+        const index = fnList.indexOf(fn)
+        if (index < 0) return undefined
+        fnList.splice(index, 1)
+    }
+}
+
+//使用
+const e = new EventHub()
+e.on('click', (name) => {
+    console.log(name)
+})
+setTimeout(() => {
+    e.emit('click', 'Origami')
+}, 3000)
+
+//手写AJAX
+
+const ajax = (method, url, data, success, fail) => {
+    const request = new XMLHttpRequest()
+    request.open(method,url)
+    request.onreadystatechange = function (){
+        if (request.readyState === 4) {
+            if (request.status >= 200 && request.status < 300 || request.status === 304){
+                success(request)
+            }else {
+                fail(request)
+            }
+        }
+    }
+    request.send()
+}
+
