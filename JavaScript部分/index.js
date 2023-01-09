@@ -163,16 +163,34 @@ setTimeout(() => {
 
 const ajax = (method, url, data, success, fail) => {
     const request = new XMLHttpRequest()
-    request.open(method,url)
-    request.onreadystatechange = function (){
+    request.open(method, url)
+    request.onreadystatechange = function () {
         if (request.readyState === 4) {
-            if (request.status >= 200 && request.status < 300 || request.status === 304){
+            if (request.status >= 200 && request.status < 300 || request.status === 304) {
                 success(request)
-            }else {
+            } else {
                 fail(request)
             }
         }
     }
     request.send()
+}
+
+//手写Promise.all
+//all的参数是一个Promise的数组 返回值是一个Promise对象
+Promise.myAll = function (list) {
+    const results = []
+    let count = 0
+    return new Promise((resolve, reject) => {
+        list.map((promise, index) => {
+            promise.then(result => {
+                results[index] = result
+                count += 1
+                if (count >= list.length) {
+                    resolve(results)
+                }
+            }, reason => reject(reason))
+        })
+    })
 }
 
