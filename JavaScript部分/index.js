@@ -194,3 +194,31 @@ Promise.myAll = function (list) {
     })
 }
 
+//手写数组去重
+
+//方法一：set
+
+function uniq(a) {
+    return Array.from(new Set(a)) //new Set接收一个数组自动去除重复项
+}
+
+//方法二：使用map
+
+function uniq2(a) {
+    const map = new Map()
+    for (let i = 0; i < a.length; i++) {
+        let number = a[i]
+        if (number === undefined) {
+            continue
+        }
+        if (map.has(number)) {
+            continue
+        }
+        map.set(number, true) //存放number为map的key
+    }
+    return [...map.keys()] //以数组的形式返回map的key
+}
+
+
+
+
