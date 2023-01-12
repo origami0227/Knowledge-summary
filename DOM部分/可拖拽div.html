@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>可拖拽div</title>
+    <style>
+        div {
+            border: 1px solid red;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 100px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div id="xxx"></div>
+</body>
+</html>
+<script>
+    let dragging = false
+    let position = null
+    xxx.addEventListener('mousedown', function (e) {
+        //鼠标按下时，标记正在拖拽并
+        dragging = true
+        position = [e.clientX, e.clientY] //记录初始位置
+    })
+    document.addEventListener('mouseover', function (e) {
+        if (dragging === false)  return //没有移动就不拖拽
+        const x = e.clientX
+        const y = e.clientY //移动时记录鼠标移动的xy
+        const deltaX = x - position[0]
+        const deltaY = y - position[1] //和上一次position的差值
+        const left = parseInt(xxx.style.left || 0)
+        const top = parseInt(xxx.style.top || 0) //获取原始的 left以及top
+        xxx.style.left = left + deltaX + 'px'
+        xxx.style.top = top + deltaY + 'px'
+        position = [x, y] //移动记录到position里面 下一次移动只用知道两次的差即可
+    })
+    document.addEventListener('mouseup', function (e) {
+        dragging = false //鼠标松开
+    })
+</script>
