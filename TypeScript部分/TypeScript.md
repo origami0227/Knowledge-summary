@@ -188,5 +188,77 @@ let dir:Dir = '东'
 ```
 
 
-### Typescript中type的用法
+### 联合类型和交叉类型
+
+##### 联合类型和区分联合类型
+
+```
+const f = (n:string|number)=>{
+   console.log(n)
+}
+//这里n可以是string或者number中的任意一个，这就是联合类型
+```
+
+**如果是复杂类型的情况：可能需要辨别类型**
+
+```
+type A = {
+   name:string;
+   age:number
+}
+type B = {
+    name:string;
+    gender:string
+}
+//联合类型同样支持复杂类型
+const f = (n:number|B) => {
+   if(typeof n ==== 'number'){
+      n.toFixed()//这个方法需要number，而B类型是没有number，也就说说有50%的概率不成立，因此我们需要辨别类型
+   }else{
+      n.name
+   }
+}
+```
+
+**区分联合类型**
+
+```
+type A = {
+   name:'a';
+   age:number
+}
+type B = {
+    name:'b';
+    gender:string
+}
+//两个type需要有一个相同的key才能进行区分
+const f = (n:A|B) =>{
+    if(n.name === 'a'){
+       n.age
+    }else{
+       n.gender
+    }
+}
+```
+
+##### 交叉类型
+
+```
+type A = number & string //A的类型就是never，number和string没有交集
+const a:A = 1 //错误
+```
+所以一般来说交叉类型不能用于简单类型。
+
+```
+type B = {name:string} & {age:number} //两个复杂类型合并
+const b:B = {
+    name:'Origami',
+    age:21
+}
+```
+这样是可行的。
+
+
+
+
 
