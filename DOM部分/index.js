@@ -25,3 +25,6 @@ function delegate(element, eventType, selector, fn) {
 }
 
 delegate(ul, 'click', 'li', f1 ) //点击了ul里面的li就会触发f1
+
+
+
